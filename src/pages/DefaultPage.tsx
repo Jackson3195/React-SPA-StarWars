@@ -17,7 +17,7 @@ function DefaultPage() {
 
   return (
     <div className="page center vh">
-      {/* Future-TODO: Figure out React Vue:Slots equvilent so card can be reused...*/}
+      {/* Future-TODO: Figure out Vue:Slots equvilent so card can be reused...*/}
       <div className="card character-search-card">
         {/* Card Header */}
         <h5 className="card-header">STAR WARS HEROES</h5>
