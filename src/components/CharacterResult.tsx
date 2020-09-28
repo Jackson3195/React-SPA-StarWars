@@ -9,7 +9,9 @@ export interface SearchResult {
   hair_color: string;
 }
 
-class CharacterResult extends React.Component<{ result: SearchResult }> {
+class CharacterResult extends React.Component<{
+  result: SearchResult;
+}> {
   // Format birth year to look pretty
   private formatBirthyear(value: string): string {
     const bbyIndex = value.indexOf('BBY');
@@ -20,15 +22,32 @@ class CharacterResult extends React.Component<{ result: SearchResult }> {
     return value;
   }
 
+  private Capitalize(value: string) {
+    if (value && typeof value === 'string') {
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    } else {
+      return value;
+    }
+  }
+
   render() {
     return (
       <div className="card-content result">
+        {/* Helper */}
+        {this.props.result.name === '' ? (
+          <div className="result-overlay">
+            <p>Search for a result</p>
+          </div>
+        ) : null}
+        {/* Main Result Card */}
         <h6>{this.props.result.name}</h6>
         <div className="result-info">
           {/** Gender */}
           <div className="row">
             <div className="column label">Gender</div>
-            <div className="column value">{this.props.result.gender}</div>
+            <div className="column value">
+              {this.Capitalize(this.props.result.gender)}
+            </div>
           </div>
           {/** Birth year */}
           <div className="row">
@@ -50,7 +69,9 @@ class CharacterResult extends React.Component<{ result: SearchResult }> {
           {/** Hair color */}
           <div className="row">
             <div className="column label">Hair Color</div>
-            <div className="column value">{this.props.result.hair_color}</div>
+            <div className="column value">
+              {this.Capitalize(this.props.result.hair_color)}
+            </div>
           </div>
         </div>
       </div>

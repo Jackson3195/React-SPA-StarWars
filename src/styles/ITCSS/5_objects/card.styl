@@ -6,6 +6,7 @@ $primary-grey = #ededed
   border-radius: $card-radius 
   width: 100%
   min-height: 20rem
+  max-width: 30rem
   position: relative
 
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
@@ -27,6 +28,22 @@ $primary-grey = #ededed
     height: "calc(100% - %s)" % $card-height-height
     padding: 1rem
 
+  .card-loading, .result-overlay
+    z-index: 100
+    position: absolute
+    top: 0
+    right: 0
+    background-color: white
+    height: 100%
+    width: 100%
+    display: flex
+    justify-content: center
+    align-items: center
+    border-radius: $card-radius
+
+  .result-overlay
+    z-index: 75
+
 .character-search-card
   .card-content
     border-radius: $card-radius
@@ -47,6 +64,7 @@ $primary-grey = #ededed
     background-color: $primary-grey
 
   .result
+    position: relative
     h6
       line-height: 3rem
       font-size: 1.1rem
