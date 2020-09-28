@@ -4,7 +4,7 @@ import DefaultPage from '../pages/DefaultPage';
 
 function DefaultLayout() {
   return (
-    <div className="default-layout">
+    <div className="layout">
       <DefaultPage></DefaultPage>
     </div>
   );
