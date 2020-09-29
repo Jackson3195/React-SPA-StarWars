@@ -18,10 +18,15 @@ interface DefaultPageState {
   loading: boolean;
   searchResult: SearchResult;
   searchNoResult: boolean;
+  searchError: boolean;
+  searcHelperText: string | null;
 }
-
-// Note: You may get warning in console: https://stackoverflow.com/questions/61220424/material-ui-drawer-finddomnode-is-deprecated-in-strictmode
-// Seems like Material UI team hasnt updated this component but it is StrictMode warning.
+/**
+ * You may get warning in console: https://stackoverflow.com/questions/61220424/material-ui-drawer-finddomnode-is-deprecated-in-strictmode
+ * https://github.com/mui-org/material-ui/issues/13394
+ * Seems like Material UI team hasnt updated this component but it is StrictMode warning; issue is with teh Snackbar Component
+ *
+ * */
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -41,13 +46,29 @@ class DefaultPage extends React.Component<{}, DefaultPageState> {
         mass: '',
       },
       searchNoResult: false,
+      searchError: false,
+      searcHelperText: 'E.g. Luke Skywalker',
     };
     this.handleSearchInputChange = this.handleSearchInputChange.bind(this);
     this.search = this.search.bind(this);
   }
 
   handleSearchInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ searchInput: e.target.value, searchNoResult: false });
+    // Determine if input is valid
+    const validityRegex = new RegExp(/^[a-zA-Z0-9\s-]*$/gm);
+    if (validityRegex.test(e.target.value)) {
+      this.setState({
+        searchInput: e.target.value,
+        searchNoResult: false,
+        searchError: false,
+        searcHelperText: 'E.g. Luke Skywalker',
+      });
+    } else {
+      this.setState({
+        searchError: true,
+        searcHelperText: 'Enter a valid input',
+      });
+    }
   }
   // Note: Switched to arrow function because "this" bindings did not allow access to "search"
   handleSearchInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -65,29 +86,30 @@ class DefaultPage extends React.Component<{}, DefaultPageState> {
   };
 
   search() {
-    // Set loading
-    this.setState({ loading: true, searchNoResult: false });
-    // Perform query
-    fetch('http://swapi.dev/api/people/?search=' + this.state.searchInput)
-      .then(async (response) => {
-        if (response.status === 200) {
-          let body: SwapiAPIResponse = await response.json();
-          if (body.count > 0) {
-            this.setState({ searchResult: body.results[0] });
+    if (!this.state.searchError) {
+      // Set loading
+      this.setState({ loading: true, searchNoResult: false });
+      // Perform query
+      fetch('http://swapi.dev/api/people/?search=' + this.state.searchInput)
+        .then(async (response) => {
+          if (response.status === 200) {
+            let body: SwapiAPIResponse = await response.json();
+            if (body.count > 0) {
+              this.setState({ searchResult: body.results[0] });
+            } else {
+              this.setState({ searchNoResult: true });
+            }
           } else {
-            this.setState({ searchNoResult: true });
+            console.warn('Unhandled response code: ' + response.status);
           }
-          console.log('Wooo', body);
-        } else {
-          console.error('Nooo');
-        }
-      })
-      .catch((err) => {
-        console.error('Fetch Error - ' + err);
-      })
-      .finally(() => {
-        this.setState({ loading: false });
-      });
+        })
+        .catch((err) => {
+          console.error('Fetch Error - ' + err);
+        })
+        .finally(() => {
+          this.setState({ loading: false });
+        });
+    }
   }
 
   render() {
@@ -110,11 +132,12 @@ class DefaultPage extends React.Component<{}, DefaultPageState> {
             <div className="card-content hightlight-content padded">
               <div className="input-container">
                 <label>Character Name</label>
-                {/* Input */}
+                {/* Input TODO: Add validation...*/}
                 <TextField
                   id="outlined-basic"
                   variant="outlined"
-                  helperText="E.g. Luke Skywalker"
+                  error={this.state.searchError}
+                  helperText={this.state.searcHelperText}
                   fullWidth
                   onChange={this.handleSearchInputChange}
                   onKeyDown={this.handleSearchInputKeyPress}
