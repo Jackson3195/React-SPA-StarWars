@@ -51,7 +51,7 @@ class DefaultPage extends React.Component<{}, DefaultPageState> {
       searcHelperText: 'E.g. Luke Skywalker',
     });
     // Validate
-    this.validateInput(this.state.searchInput);
+    this.validateInput(e.target.value);
   }
 
   validateInput(value: string) {
@@ -84,41 +84,41 @@ class DefaultPage extends React.Component<{}, DefaultPageState> {
 
   handleSnackbarClose = (e: React.SyntheticEvent, reason?: string) => {
     if (reason === 'clickaway') {
-      console.log('click away');
       return;
     }
     this.setState({ searchNoResult: false });
   };
 
-  search() {
+  async search() {
     if (this.validateInput(this.state.searchInput)) {
       // Set loading
       this.setState({ loading: true, searchNoResult: false });
       // Perform query
-      fetch('http://swapi.dev/api/people/?search=' + this.state.searchInput)
-        .then(async (response) => {
-          if (response.status === 200) {
-            let body: SwapiAPIResponse = await response.json();
-            if (body.count > 0) {
-              this.setState({ searchResult: body.results[0] });
-            } else {
-              this.setState({
-                searchError: true,
-                searcHelperText:
-                  'No results found for ' + this.state.searchInput,
-              });
-            }
-          } else {
-            console.warn('Unhandled response code: ' + response.status);
-          }
-        })
-        .catch((err) => {
-          console.error('Fetch Error - ' + err);
-        })
-        .finally(() => {
-          this.setState({ loading: false });
-        });
+      const response = await this.searchRequest(this.state.searchInput);
+      if (response.length > 0) {
+        this.setState({ searchResult: response[0] });
+      } else {
+        this.handleInputError('No results found for ' + this.state.searchInput);
+      }
+      this.setState({ loading: false });
     }
+  }
+
+  async searchRequest(searchTerm: string) {
+    try {
+      const response = await fetch(
+        'http://swapi.dev/api/people/?search=' + searchTerm
+      );
+      if (response.status === 200) {
+        let body: SwapiAPIResponse = await response.json();
+        return body.results;
+      } else {
+        console.warn('Unhandled response code: ' + response.status);
+      }
+    } catch (e) {
+      console.error('Fetch Error - ' + e);
+    }
+    return [];
   }
 
   render() {
@@ -140,9 +140,10 @@ class DefaultPage extends React.Component<{}, DefaultPageState> {
             {/* Search */}
             <div className="card-content hightlight-content padded">
               <div className="input-container">
-                <label>Character Name</label>
+                <label htmlFor="characterSearch">Character Name</label>
                 {/* Input */}
                 <TextField
+                  aria-label="characterSearch"
                   id="outlined-basic"
                   variant="outlined"
                   error={this.state.searchError}
