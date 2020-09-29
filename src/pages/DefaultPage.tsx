@@ -4,9 +4,7 @@ import {
   IconButton,
   InputAdornment,
   CircularProgress,
-  Snackbar,
 } from '@material-ui/core';
-import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import SearchIcon from '@material-ui/icons/Search';
 import CharacterResult, { SearchResult } from '../components/CharacterResult';
 import { SwapiAPIResponse } from '../interfaces/swapi';
@@ -20,15 +18,6 @@ interface DefaultPageState {
   searchNoResult: boolean;
   searchError: boolean;
   searcHelperText: string | null;
-}
-/**
- * You may get warning in console: https://stackoverflow.com/questions/61220424/material-ui-drawer-finddomnode-is-deprecated-in-strictmode
- * https://github.com/mui-org/material-ui/issues/13394
- * Seems like Material UI team hasnt updated this component but it is StrictMode warning; issue is with teh Snackbar Component
- *
- * */
-function Alert(props: AlertProps) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 class DefaultPage extends React.Component<{}, DefaultPageState> {
@@ -97,7 +86,11 @@ class DefaultPage extends React.Component<{}, DefaultPageState> {
             if (body.count > 0) {
               this.setState({ searchResult: body.results[0] });
             } else {
-              this.setState({ searchNoResult: true });
+              this.setState({
+                searchError: true,
+                searcHelperText:
+                  'No results found for ' + this.state.searchInput,
+              });
             }
           } else {
             console.warn('Unhandled response code: ' + response.status);
@@ -161,16 +154,6 @@ class DefaultPage extends React.Component<{}, DefaultPageState> {
             </div>
             {/* Search Body */}
             <CharacterResult result={this.state.searchResult}></CharacterResult>
-            {/* Snackbar */}
-            <Snackbar
-              open={this.state.searchNoResult}
-              autoHideDuration={5000}
-              onClose={this.handleSnackbarClose}
-            >
-              <Alert onClose={this.handleSnackbarClose} severity="warning">
-                No results found for {this.state.searchInput}
-              </Alert>
-            </Snackbar>
           </div>
         </div>
       </div>
