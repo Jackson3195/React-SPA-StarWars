@@ -43,21 +43,37 @@ class DefaultPage extends React.Component<{}, DefaultPageState> {
   }
 
   handleSearchInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    // Set state
+    this.setState({
+      searchInput: e.target.value,
+      searchNoResult: false,
+      searchError: false,
+      searcHelperText: 'E.g. Luke Skywalker',
+    });
+    // Validate
+    this.validateInput(this.state.searchInput);
+  }
+
+  validateInput(value: string) {
     // Determine if input is valid
     const validityRegex = new RegExp(/^[a-zA-Z0-9\s-]*$/gm);
-    if (validityRegex.test(e.target.value)) {
-      this.setState({
-        searchInput: e.target.value,
-        searchNoResult: false,
-        searchError: false,
-        searcHelperText: 'E.g. Luke Skywalker',
-      });
+    if (value.trim()) {
+      if (validityRegex.test(value)) {
+        return true;
+      } else {
+        this.handleInputError('Enter a valid input');
+      }
     } else {
-      this.setState({
-        searchError: true,
-        searcHelperText: 'Enter a valid input',
-      });
+      this.handleInputError('Enter a value');
     }
+    return false;
+  }
+
+  handleInputError(reason: string) {
+    this.setState({
+      searchError: true,
+      searcHelperText: reason,
+    });
   }
   // Note: Switched to arrow function because "this" bindings did not allow access to "search"
   handleSearchInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -75,7 +91,7 @@ class DefaultPage extends React.Component<{}, DefaultPageState> {
   };
 
   search() {
-    if (!this.state.searchError) {
+    if (this.validateInput(this.state.searchInput)) {
       // Set loading
       this.setState({ loading: true, searchNoResult: false });
       // Perform query
@@ -125,7 +141,7 @@ class DefaultPage extends React.Component<{}, DefaultPageState> {
             <div className="card-content hightlight-content padded">
               <div className="input-container">
                 <label>Character Name</label>
-                {/* Input TODO: Add validation...*/}
+                {/* Input */}
                 <TextField
                   id="outlined-basic"
                   variant="outlined"
