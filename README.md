@@ -37,10 +37,24 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+## Learning Notes (Feedback)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Traversity Media has a great starters tutorial:
+  - https://www.youtube.com/watch?v=sBws8MSXN7A&t=2479s
+- React variable reactivity is interesting, seems to be a more work than Vue just to get a single variable reactive. One can argue that you get more control but the same can be achieve by using getters/setters in Vue.
+- React testing is much easier than Vue when working with the default configuration.
+- React and Vue 3 are similar in terms of you are responsible for the structure of the code within the component. Vue2, provides a skeleton and you fill in the blanks. Unsure which-one I prefer yet.
+- Trying to get styling to work or keeping it all in once place is a win for Vue over react but solveable with some Webpack configurations.
+- Jest is just beautiful.
+- Think I'm going to try TDD more often due to code architecture benefits.
+- Overall? This was fun, learning the kinks of testing took longer than building the app itself. (See git log for more timings etc...)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Testing Notes (Feedback)
 
-## Testing Notes
+- Checkout src/pages/DefaultPage.test.tsx
+  - Specifically the last test.
+    - When testing it says the handleInputErrorMock mocked function has been called 0 times.
+    - However the console log INSIDE that mocked function is ran and output implying that its called atleast once.
+    - Do not believe it's a React specific issue as because other tests would break where I mock things.
+    - Do not believe it's a Jest issue as previous mocked functions work fine.
+    - Possibly a combination of the two? Unsure; Google doesn't give me much hope either. So would be awesome if you could tell me why I'm doing wrong here.
