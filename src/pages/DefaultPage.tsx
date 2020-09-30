@@ -61,10 +61,10 @@ class DefaultPage extends React.Component<{}, DefaultPageState> {
       if (validityRegex.test(value)) {
         return true;
       } else {
-        this.handleInputError('Enter a valid input');
+        this.handleInputError('Enter a valid name');
       }
     } else {
-      this.handleInputError('Enter a value');
+      this.handleInputError('* Required');
     }
     return false;
   }

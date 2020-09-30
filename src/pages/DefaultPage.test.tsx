@@ -36,7 +36,7 @@ describe('Default page functionality', () => {
   test('Does not accept empty value or spaces', () => {
     // Invoke search with no input...
     performSearch(renderResult);
-    const requiredMsg = renderResult.getByText('Enter a value');
+    const requiredMsg = renderResult.getByText('* Required');
     expect(requiredMsg).toBeInTheDocument();
 
     // Get input and fill it with spaces
@@ -47,7 +47,7 @@ describe('Default page functionality', () => {
   test('Does not accept special characters', () => {
     inputSearch(renderResult, 'Luk£ Skywalker');
     performSearch(renderResult);
-    const validMsg = renderResult.getByText('Enter a valid input');
+    const validMsg = renderResult.getByText('Enter a valid name');
     expect(validMsg).toBeInTheDocument();
   });
 });
