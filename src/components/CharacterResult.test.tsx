@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, RenderResult } from '@testing-library/react';
 import CharacterResult, { SearchResult } from './CharacterResult';
 
 const fakeSearchResult: SearchResult = {
@@ -11,18 +11,27 @@ const fakeSearchResult: SearchResult = {
   hair_color: 'blonde',
 };
 
-test('Renders the information correctly', () => {
-  return Promise.resolve();
-});
+describe('Character result component functionality', () => {
+  let renderResult: RenderResult;
 
-test('Displays birth year correctly', () => {
-  return Promise.resolve();
-});
+  beforeEach(() => {
+    renderResult = render(
+      <CharacterResult result={fakeSearchResult}></CharacterResult>
+    );
+  });
 
-test('Displays gender correctly', () => {
-  return Promise.resolve();
-});
-
-test('Displays hair colour year correctly', () => {
-  return Promise.resolve();
+  test('Renders the information correctly', () => {
+    const textValues: string[] = [
+      'Luke Skywalker',
+      'Male', // Implicity checks format
+      '48.9 BBY', // Implicity checks format
+      '74',
+      '55',
+      'Blonde', // Implicity checks format
+    ];
+    textValues.forEach((value) => {
+      const domElement = renderResult.getByText(value);
+      expect(domElement).toBeInTheDocument();
+    });
+  });
 });

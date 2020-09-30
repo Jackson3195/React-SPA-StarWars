@@ -18,7 +18,7 @@ function performSearch(renderResult: RenderResult) {
   fireEvent.click(searchBtn);
 }
 
-describe('Default Page functionality', () => {
+describe('Default page functionality', () => {
   let renderResult: RenderResult;
 
   beforeEach(() => {
