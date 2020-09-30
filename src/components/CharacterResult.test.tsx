@@ -35,3 +35,12 @@ describe('Character result component functionality', () => {
     });
   });
 });
+
+test('Show overlay if no initial result', () => {
+  fakeSearchResult.name = '';
+  const renderResult = render(
+    <CharacterResult result={fakeSearchResult}></CharacterResult>
+  );
+  const domElement = renderResult.getByText('Search for a result');
+  expect(domElement).toBeInTheDocument();
+});
